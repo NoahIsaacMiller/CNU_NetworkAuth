@@ -4,11 +4,19 @@ import os
 
 dotenv.load_dotenv()
 
+# 禁用代理
+proxies = {
+    "http": None,
+    "https": None
+}
+
+# 构造cookies
 cookies = {
     "username": os.environ["username"],
     "password": os.environ["password"],
 }
 
+# 构造headers
 headers = {
   "Origin": "http://cc.nsu.edu.cn",
   "Referer": "http://cc.nsu.edu.cn",
@@ -18,21 +26,22 @@ headers = {
   "Accept-Language": "en-US,en;q=0.9,zh;q=0.8,zh-CN;q=0.7",
 }
 
-student_id = os.environ["username"]                                       # 这里改成你的学号
+student_id = os.environ["username"]                    # 这里改成你的学号
 account_password = os.environ["password"]              # 这里改成你的密码
+
 data_since_login = {"username":student_id, "password":account_password,"remember":"true","DoWhat":"Login"}
 data_since_get_info = {"DoWhat":"GetInfo"}
 data_since_open_net = {"DoWhat":"OpenNet","Package":f"学生-{os.environ['ISP']}-100M"}
 
 auth_url = "http://cc.nsu.edu.cn/Auth.ashx"
 
-response = requests.post(auth_url, headers=headers, json=data_since_login, cookies=cookies, verify=False)
+response = requests.post(auth_url, headers=headers, json=data_since_login, cookies=cookies, verify=False, proxies=proxies)
 print(response.json()["Message"])
 
 if (response.json()["Message"] != "身份验证成功！"):
     exit()
 
-response = requests.post(auth_url, headers=headers, json=data_since_get_info, cookies=cookies, verify=False)
+response = requests.post(auth_url, headers=headers, json=data_since_get_info, cookies=cookies, verify=False, proxies=proxies)
 print(response.json()["Message"])
 
 if (response.json()["Message"] != "查询信息成功！"):
@@ -42,7 +51,7 @@ ip = response.json()["Data"]["IP"]
 mac = response.json()["Data"]["MAC"]
 student_name = response.json()["Data"]["XM"]
 
-response = requests.post(auth_url, headers=headers, json=data_since_open_net, cookies=cookies, verify=False)
+response = requests.post(auth_url, headers=headers, json=data_since_open_net, cookies=cookies, verify=False, proxies=proxies)
 print(response.json()["Message"])
 
 if (response.json()["Message"] != "上线成功!" and response.json()["Message"] != "同时登录数已达上限！"):
