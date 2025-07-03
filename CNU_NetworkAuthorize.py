@@ -1,3 +1,4 @@
+from u679c import encrypt
 import requests
 import dotenv
 import os
@@ -13,7 +14,7 @@ proxies = {
 # 构造cookies
 cookies = {
     "username": os.environ["username"],
-    "password": os.environ["password"],
+    "password": encrypt(os.environ["username"], os.environ["password"]),
 }
 
 # 构造headers
