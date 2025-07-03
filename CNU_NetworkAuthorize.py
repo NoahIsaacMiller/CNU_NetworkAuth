@@ -9,25 +9,31 @@ proxies = {
     "https": None
 }
 
+currentDir = os.path.dirname(__file__)
+userConfFp = os.path.join(currentDir, "userConf.json")
+
 def createConfigurationFile():
     data = {
         "username": "这里改成你的学号",
         "password": "这里改成你的校园网密码",
         "ISP": "这里改成你的运营商: [电信|联通|移动]"
     }
-    f = open("./userConf.json", "w", encoding="utf8")
+    f = open(userConfFp, "w", encoding="utf8")
     json.dump(data, f, ensure_ascii=False, indent=2)
     f.close()
 
 
 # 如果配置文件不存在, 先创建配置文件
-if not os.path.exists("./userConf.json"):
+if not os.path.exists(userConfFp):
     createConfigurationFile()
 
 
 try:
-    f = open("./userConf.json", "r", encoding="utf8")
+    f = open(userConfFp, "r", encoding="utf8")
     userInfo = json.load(f)
+except FileNotFoundError:
+    createConfigurationFile()
+    print("配置文件丢失, 已重新生成, 请填写后重试!")
 except json.JSONDecodeError:
     print("配置文件格式错误")
 finally:
@@ -57,7 +63,7 @@ headers = {
 
 data_since_login = {"username":student_id, "password": account_password,"remember":"true","DoWhat":"Login"}
 data_since_get_info = {"DoWhat":"GetInfo"}
-data_since_open_net = {"DoWhat":"OpenNet","Package":f"学生-{os.environ['ISP']}-100M"}
+data_since_open_net = {"DoWhat":"OpenNet","Package":f"学生-{userInfo['ISP']}-100M"}
 
 auth_url = "http://cc.nsu.edu.cn/Auth.ashx"
 
