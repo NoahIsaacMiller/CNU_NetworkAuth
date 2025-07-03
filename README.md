@@ -1,6 +1,6 @@
 # 成都东软校园网认证
 ## 依赖库安装
-`pip install requests -i https://pypi.tuna.tsinghua.edu.cn/simple`
+`pip install requests pycryptodome -i https://pypi.tuna.tsinghua.edu.cn/simple`
 
 ## 需要配置的地方
 `.env`文件保存了你的学号，密码，和运营商名字
